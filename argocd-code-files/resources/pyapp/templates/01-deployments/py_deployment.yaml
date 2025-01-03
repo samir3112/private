@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: py-deployment
+  namespace: py-ns
+  labels:
+    app: py-app
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: py-app
+  template:
+    metadata:
+      labels:
+        app: py-app
+    spec:
+      containers:
+      - name: py
+        image: cbagade/py-kube-setup:latest
+        ports:
+        - name: http
+          containerPort: 5000
