@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: env-demo
+  namespace: kube-learnings
+  # labels on pod
+  labels:
+    name: env-demo
+spec:
+  containers:
+  - name: env-demo
+    image: cbagade/py-first-prog-env:v2
+    imagePullPolicy: Always
+    env:
+    - name: who_to_greet_env_var
+      value: DevOps Team
+    
+
+    
+
+# Refreshing previous knowledge on env vars
+# docker build -t cbagade/py-first-prog-env:v2 .
+# docker push cbagade/py-first-prog-env:v2
+
+# demo of env vars in kubernetes
+# kubectl apply -f pod.yaml
+# kubectl get pods -w
+# kubectl expose --type=NodePort  pod  env-demo --port 5000 --name env-demo-svc
+# curl localhost:<node port>
+
+# kubectl delete pod env-demo
+# change value of env var
+# kubectl apply -f pod.yaml
+# kubectl get pods -w
+# no need to create svc again
+# curl localhost:<same node port>

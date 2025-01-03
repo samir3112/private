@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend
+spec:
+  containers:
+  - name: frontend
+    image: cbagade/pykubd-first-app:v5
+    imagePullPolicy: Always
+    ports:
+      - containerPort: 5000
+  # pod will be placed on node with label
+  # capacity equals large
+  nodeSelector:      
+    capacity: large
+    
+
+# kubectl get nodes
+# label node first
+# kubectl label nodes node01 capacity=large
+# kubectl get nodes node01 --show-labels
+# Look at NodeSelector section in pod.yaml above
+# kubectl apply -f pod.yaml
+# kubectl get pods -o wide
+# pod will be scheduled on node01
+
+
+# remove label
+# kubectl delete -f pod.yaml
+# kubectl label nodes node01 capacity-

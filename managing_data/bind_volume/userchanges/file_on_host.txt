@@ -1,0 +1,2 @@
+Hi DevOps Team, this is demo for bind volume
+Lets change message locally, without building docker images it should be visible

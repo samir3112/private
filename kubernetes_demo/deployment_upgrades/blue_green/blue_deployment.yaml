@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-dep
+spec:
+  replicas: 3
+  # this will decide how deployments should be updated
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: blue-green-app
+    spec:
+      containers:
+      - name: blue-green-app
+        image: cbagade/dep-up-app:v1
+  selector:
+    matchLabels:
+      app: blue-green-app
+
+
+
+# SIMULATION OF BLUE-GREEN, AS WE DON'T HAVE MULTIPLE ENVIRONMENTS
+
+# There are 2 verions of images v1 and v2 - refer Docker file
+# blue_deployment is created with v1 image and
+# green deployment is created with v2 image
+# both deployments can coexist
+# pl note labels of both deployments and service points to both
+# service is pointing to pod labels which are same for both deployments, so will fetch response from both deployment
+
+# create kuberntes artifacts
+# kubectl apply -f blue_deployment.yaml -f green_deployment.yaml -f service.yaml
+# kubectl get pods -w
+# kubectl get svc
+# ensure svc has all endpoints
+# kubectl describe svc blue-green-svc
+# hit multiple times, response will go to both versions
+# curl http://localhost:30008/greetings
+# now we need to shift all traffic to green from green and decommission blue deployment
+# we will do with CLI
+# kubectl scale deployment green-dep --replicas=6
+# kubectl get pods -w
+# kubectl scale deployment blue-dep --replicas=0
+# ensure traffic going to v2
+# curl http://localhost:30008/greetings
+# delete blue deployment
+# kubectl delete -f blue_deployment.yaml
+# kubectl get pods -w
+# with CLI , the replicas in source repo file won't change
+
+# clean up
+# kubectl delete -f blue_deployment.yaml -f green_deployment.yaml -f service.yaml
+

@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: task-job
+spec:
+  completions: 3
+  template:
+    spec:
+      containers:
+      - name: task-app
+        image: cbagade/task-app:v1
+        command: ["python3", "app.py"]
+      restartPolicy: Never
+
+    # k apply -f job.yaml
+    # k get jobs
+    # k logs <pod_name>
+    # k delete -f job.yaml
+    # till this point job will run 1 replica of pod
+    # but job can run multiple replicas of pod
+    # uncomment completions field
+    # this will run 3 pods , sequentially
+    # and job won't be in Complete state till all 3 pods are completed successfully
+    # if 1 pod fails it will run again , till it get 3 successfull completions

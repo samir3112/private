@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dynamic-vol
+spec:
+  containers:
+  - name: dynamic-vol
+    image: cbagade/dy-vol:v1
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+    - name: dynamic-vol
+      mountPath: /data
+    ports:
+    - containerPort: 5000
+  volumes:
+  - name: dynamic-vol
+    persistentVolumeClaim:
+      claimName: local-path-pvc
+
+
+# kubectl apply -f local-path-storage.yaml
+# k get sc
+# We will not demostrate here the data saving part, that is already covered in depth in previous sessions
+# we will just demo dynamic vol provisioning
+# k apply -f pvc.yaml
+# will be in pending state
+# k get pvc
+# and no pv
+# k get pv
+# create pod
+# k apply -f pod.yaml
+# Once pod is running, PV would have been created and PVC also bound to PV
+
+# clean up
+# kubectl delete -f pod.yaml -f pvc.yaml

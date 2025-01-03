@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: comm-and-ep
+  namespace: kube-learnings
+  # labels on pod
+  labels:
+    name: comm-and-ep
+spec:
+  containers:
+  - name: comm-and-ep
+    image: cbagade/demo-cmdentry:v2
+    imagePullPolicy: Always
+    # to override executable written in entrypoint
+    command: ["printf"]
+    # to override parameter written in command
+    args: ["DevOps Team"]
+
+    
+
+# Refreshing previous knowledge on command and entrypoint
+# docker build -t cbagade/demo-cmdentry:v2 .
+# docker push cbagade/demo-cmdentry:v2
+# docker run cbagade/demo-cmdentry:v2
+# docker run cbagade/demo-cmdentry:v2 'Dev Ops Team'
+# docker run --entrypoint printf cbagade/demo-cmdentry:v2 'Dev Ops Team\n'
+
+
+# demo of overwriting command in Dockerfile with args
+# kubectl apply -f pod.yaml
+# kubectl get pods -w
+# the pod would be in completed or crashloopback state, because there is no process to run forever
+# kubectl logs comm-and-ep
+# kubectl delete -f pod.yaml
+
+
+# demo of overwriting entrypoint in Dockerfile with command
+# uncomment command: ["printf"] in above pod file
+# kubectl apply -f pod.yaml
+# kubectl get pods -w
+# the pod would be in completed or crashloopback state, because there is no process to run forever
+# kubectl logs comm-and-ep
+# kubectl delete -f pod.yaml

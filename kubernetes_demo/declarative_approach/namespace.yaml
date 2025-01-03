@@ -1,0 +1,8 @@
+apiVersion: v1
+# Pod is k8 artifact or k8 object
+kind: Namespace
+metadata:
+  # name of namespace
+  name: kube-learnings
+
+# kubectl create -f namespace.yaml

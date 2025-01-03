@@ -1,0 +1,36 @@
+apiVersion: v1
+# ReplicationController is k8 artifact or k8 object
+kind: ReplicationController
+metadata:
+  # name of RC
+  name: first-app-rc
+  labels:
+    # another label
+    type: label-of-rc
+spec:
+  # template of pod to be created
+  template:
+    # pod metadata section
+    metadata:
+      name: first-app
+      labels:
+        tier: front-end
+    # container specification
+    spec:
+      containers:
+      - name: kube-first-app
+        image: cbagade/pykubd-first-app:v5
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 5000
+  # number of pods to be created
+  replicas: 3
+
+
+# kubectl apply -f replication_controller.yaml
+# kubectl get replicationcontroller
+# kubectl get pods -w
+# the label of pod is selector because its define inline (for rs , its explicit) (more in replicaset)
+# kubectl describe rc <rc_name>  and observe labels
+# kubectl describe pod <pod_name> and observe labels
+# kubectl delete -f replication_controller.yaml

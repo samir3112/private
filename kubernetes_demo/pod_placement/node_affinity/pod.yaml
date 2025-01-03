@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend
+spec:
+  containers:
+  - name: frontend
+    image: cbagade/pykubd-first-app:v5
+    imagePullPolicy: Always
+    ports:
+      - containerPort: 5000
+  # pod will be placed on node with label
+  # capacity equals large
+  affinity:
+    nodeAffinity:
+      # this affinity is required during scheduling but not required during execution
+      # pod won't be scheduled if label is not available on node, 
+      # but if pod is existing and someone alter label , pod will continue to run (Ignored during execution)
+      
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: capacity
+            # In mean any values specified below
+            operator: In
+            values:
+            - large
+            # say you want to place pod on a node with either large or medium node , add one more value
+            - medium            
+    
+
+# kubectl get nodes
+# label node first
+# kubectl label nodes node01 capacity=large
+# kubectl get nodes node01 --show-labels
+# Look at NodeSelector section in pod.yaml above
+# kubectl apply -f pod.yaml
+# kubectl get pods -o wide
+# pod will be scheduled on node01
+
+
+# Other combination
+
+#        - matchExpressions:
+#          - key: capacity
+#            # NotIn - don't place pod with value tinu
+#            operator: NotIn
+#            values:
+#            - tiny
+
+#        - matchExpressions:
+#          - key: capacity
+#            # Exists - check if label with key capcacity exists
+#            operator: Exists
+
+# Affinity type
+
+# preferredDuringSchedulingIgnoredDuringExecution
+# Good to have while scheduling but if matching node doesn't exist, the pod will still be shceduled on any available node
+# while pod is running , it doesn't matter (say someone change node label, pod will still continue to run) - executing
+
+# requiredDuringSchedulingrequiredDuringExecution
+# label is needed while scheduling and also while execution
+# while execution if label is not found, pod will be evicted
+
+
+# remove label
+# kubectl delete -f pod.yaml
+# kubectl label nodes node01 capacity-

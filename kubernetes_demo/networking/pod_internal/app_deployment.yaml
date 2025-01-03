@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-service
+spec:
+  selector:
+    app: users
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+    nodePort: 30008
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+      - name: users
+        image: cbagade/pykub-demo-users:latest
+        ports:
+          # container port (app will be exposed at 5000)
+          - containerPort: 5000        
+        env:
+        - name: AUTH_ADDRESS
+          value: localhost
+      - name: auth
+        image: cbagade/pykub-demo-auth:latest
+        ports:
+          # container port (app will be exposed at 80)
+          - containerPort: 80
+
+
+# both containers run in same pod
+# so localhost should call the other container
+# cd user_api
+# docker build -t cbagade/pykub-demo-users:latest .
+# docker push cbagade/pykub-demo-users:latest
+# cd auth_api
+# docker build -t cbagade/pykub-demo-auth:latest .
+# docker push cbagade/pykub-demo-auth:latest
+# cd ..
+# kubectl apply -f app_deployment.yaml
+# kubectl logs <pod>  -> will show containers
+# kubectl logs <pod> -c users -f
+# kubectl logs <pod> -c auth -f --> on other terminal
+# POST signup - http://localhost:30008/signup 
+# see logs printing messages
+# kubectl delete -f app_deployment.yaml
